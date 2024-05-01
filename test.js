@@ -556,8 +556,8 @@ const products =
 
 const categories = new Set([...products.map(p => p.category)])
 
-categories.map(c => ({value:c , label: c.split('_').join(' '),checked: false}))
+categories.map(c => ({value:c , label: c.split('_').join(' '),checked:false}))
 
 const brands = new Set([...products.map(p => p.brand)])
 
-brands.map(c => ({value:c , label: c.split('_').join(' '),checked: false}))
+brands.map(c => ({value:c , label: c.split('_').join(' '),checked:false}))

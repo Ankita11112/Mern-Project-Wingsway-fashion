@@ -550,5 +550,80 @@
         "https://cdn.dummyjson.com/product-images/30/thumbnail.jpg"
       ]
     }
-  ]
+  ],
+  "brands": [
+    {
+      "value": "Apple",
+      "label": "Apple",
+      "checked": false
+    },
+    {
+      "value": "Samsung",
+      "label": "Samsung",
+      "checked": false
+    },
+    {
+      "value": "OPPO",
+      "label": "OPPO",
+      "checked": false
+    },
+    {
+      "value": "Huawei",
+      "label": "Huawei",
+      "checked": false
+    },
+    {
+      "value": "Microsoft Surface",
+      "label": "Microsoft Surface",
+      "checked": false
+    },
+    {
+      "value": "Infinix",
+      "label": "Infinix",
+      "checked": false
+    },
+    {
+      "value": "HP Pavilion",
+      "label": "HP Pavilion",
+      "checked": false
+    },
+    {
+      "value": "Impression of Acqua Di Gio",
+      "label": "Impression of Acqua Di Gio",
+      "checked": false
+    }
+  ],
+  "category": [
+    {
+      "value": "smartphones",
+      "label": "smartphones",
+      "checked": false
+    },
+    {
+      "value": "laptops",
+      "label": "laptops",
+      "checked": false
+    },
+    {
+      "value": "fragrances",
+      "label": "fragrances",
+      "checked": false
+    },
+    {
+      "value": "skincare",
+      "label": "skincare",
+      "checked": false
+    },
+    {
+      "value": "groceries",
+      "label": "groceries",
+      "checked": false
+    },
+    {
+      "value": "home-decoration",
+      "label": "home decoration",
+      "checked": false
+    }
+  ],
+  "users": []
 }
