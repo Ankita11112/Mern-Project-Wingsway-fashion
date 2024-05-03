@@ -33,14 +33,13 @@ export default function Login() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form noValidate className="space-y-6" onSubmit={handleSubmit((data) => {
+          <form noValidate  onSubmit={handleSubmit((data) => {
             dispatch(checkUserAsync({
                   email: data.email,
                    password: data.password
                   }));
-            
             console.log(data);
-          })} action='#' method='POST'>
+          })} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address

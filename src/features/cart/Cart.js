@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {deleteItemFromCartAsync, selectItems, updateCartAsync,} from './cartSlice';
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
 // const products = [
 //   {
@@ -31,7 +31,7 @@ import { Link } from 'react-router-dom';
 // ]
 
 export default function Cart() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); 
   const [open , setOpen] = useState(true);
   const items = useSelector(selectItems);
   const totalAmount = items.reduce((amount, item) => item.price * item.quantity + amount, 0);
@@ -47,6 +47,7 @@ export default function Cart() {
 
   return (
     <>
+       {!items.length && <Navigate to='/' replace={true}></Navigate> }
       <div>
         <div className="mx-auto mt-12 bg-white max-w-7xl px-0 sm:px-0 lg:px-0">
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
@@ -120,10 +121,10 @@ export default function Cart() {
             <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
             <div className="mt-6">
               <Link
-                to="/pay"
+                to="/checkout"
                 className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
               >
-                Pay and Order
+                Checkout
               </Link>
             </div>
             <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
