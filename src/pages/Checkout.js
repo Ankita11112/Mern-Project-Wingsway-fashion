@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 import { deleteItemFromCartAsync, selectItems, updateCartAsync } from '../features/cart/cartSlice';
 import { useForm } from 'react-hook-form';
-import { selectLoggedInUser, updateUserAsync } from '../features/auth/authSlice';
-import { createOrderAsync } from '../features/order/orderSlice';
+import { createOrderAsync, selectCurrentOrder} from '../features/order/orderSlice';
+import { selectUserInfo, updateUserAsync } from '../features/user/userSlice';
+import { discountedPrice } from '../app/constants';
 
 const Checkout = () => {
     const dispatch = useDispatch();
@@ -15,8 +16,9 @@ const Checkout = () => {
         formState: { errors },
     } = useForm();
     const items = useSelector(selectItems);
-    const user = useSelector(selectLoggedInUser);
-    const totalAmount = items.reduce((amount, item) => item.price * item.quantity + amount, 0);
+    const user = useSelector(selectUserInfo);
+    const currentOrder = useSelector(selectCurrentOrder);
+    const totalAmount = items.reduce((amount, item) => discountedPrice(item) * item.quantity + amount, 0);
     const totalItems = items.reduce((total, item) => item.quantity + total, 0);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState('cash');
@@ -29,40 +31,54 @@ const Checkout = () => {
         dispatch(deleteItemFromCartAsync(id))
     }
 
-    const handleAddress = (e) =>{
+    const handleAddress = (e) => {
         console.log(e.target.value);
         setSelectedAddress(user.addresses[e.target.value]);
     }
 
-    const handlePayment = (e) =>{
+    const handlePayment = (e) => {
         console.log(e.target.value);
         setPaymentMethod(e.target.value);
     }
 
-    const handleOrder = (e) =>{
+    const handleOrder = (e) => {
+        if(selectedAddress && paymentMethod){
+            const order = {
+            items,
+            totalAmount,
+            totalItems,
+            user,
+            paymentMethod,
+            selectedAddress,
+            status: 'pending' //other status can be delivered , received.
+        };
+        dispatch(createOrderAsync(order)); 
+        //need to redirect from here to new page of order success
+        }else{
+            alert('Enter Address and Payment Method');
+        }  
         //TODO: Redirect to order success page
         //TODO: Clear Cart After Order
         //TODO: On Server Change the stock Number of items
-        const order = {items, totalAmount, totalItems, user, paymentMethod, selectedAddress};
-       dispatch(createOrderAsync(order));
     }
 
 
     return (
         <>
             {!items.length && <Navigate to='/' replace={true}></Navigate>}
+            {currentOrder && <Navigate to={`/order-success/${currentOrder.id}`} replace={true}></Navigate>}
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
                     <div className="lg:col-span-3">
                         <form className='bg-white px-5 py-12 mt-12' noValidate onSubmit={handleSubmit((data) => {
-                        console.log(data);
+                            console.log(data);
                             dispatch(
                                 updateUserAsync({
                                     ...user,
                                     addresses: [...user.addresses, data],
-                                  })
-                        );
-                        reset();
+                                })
+                            );
+                            reset();
                         })}>
                             <div className='space-y-12'>
                                 <div className="border-b border-gray-900/10 pb-12">
@@ -103,7 +119,7 @@ const Checkout = () => {
                                                 Phone
                                             </label>
                                             <div className="mt-2">
-                                            <input
+                                                <input
                                                     id="phone"
                                                     {...register('phone', { required: 'phone is required' })}
                                                     type="tel"
@@ -193,8 +209,8 @@ const Checkout = () => {
                                             <li key={index} className="flex justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200">
                                                 <div className="flex gap-x-4  ">
                                                     <input
-                                                    onChange={handleAddress}
-                                                       name='address'
+                                                        onChange={handleAddress}
+                                                        name='address'
                                                         type="radio"
                                                         value={index}
                                                         className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
@@ -223,8 +239,8 @@ const Checkout = () => {
                                             <div className="mt-6 space-y-6">
                                                 <div className="flex items-center gap-x-3">
                                                     <input
-                                                    onChange={handlePayment}
-                                                    value="cash"
+                                                        onChange={handlePayment}
+                                                        value="cash"
                                                         id="cash"
                                                         name="payments"
                                                         type="radio"
@@ -237,8 +253,8 @@ const Checkout = () => {
                                                 </div>
                                                 <div className="flex items-center gap-x-3">
                                                     <input
-                                                    onChange={handlePayment}
-                                                    value="card"
+                                                        onChange={handlePayment}
+                                                        value="card"
                                                         id="card"
                                                         name="payments"
                                                         type="radio"
@@ -280,9 +296,7 @@ const Checkout = () => {
                                                                 <a href={item.href}>{item.name}</a>
                                                             </h3>
                                                             <div className=''>
-                                                                {/* <p className="ml-4 text-sm font-medium text-gray-900"> ${Math.round(item.price * (1 - item.discountPercentage / 100))}</p> */}
-                                                                <p className="ml-4 text-sm font-medium text-gray-900">${item.price}</p>
-                                                                {/* <p className="ml-4 text-sm font-medium line-through text-gray-400">${item.price}</p> */}
+                                                                <p className="ml-4 text-sm font-medium text-gray-900">${discountedPrice(item)}</p>
                                                             </div>
 
                                                         </div>

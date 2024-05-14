@@ -1,10 +1,10 @@
 import { useState , useEffect } from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
-import { fetchProductByIdAsync, selectProductById } from '../productSlice';
+import { fetchProductByIdAsync, selectProductById } from '../../product/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { addToCartAsync, selectItems } from '../../cart/cartSlice';
+import { addToCartAsync } from '../../cart/cartSlice';
 import { selectLoggedInUser } from '../../auth/authSlice';
 import { discountedPrice } from '../../../app/constants';
 
@@ -36,25 +36,19 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function ProductDetail() {
+export default function AdminProductDetail() {
   const dispatch = useDispatch();
   const [selectedColor, setSelectedColor] = useState(colors[0])
   const [selectedSize, setSelectedSize] = useState(sizes[2])
   const user = useSelector(selectLoggedInUser);
   const product = useSelector(selectProductById);
-  const items = useSelector(selectItems);
   const params = useParams();  //it is react-router feature help us for all  variable routes as like :id
 
   const handleCart = (e) => {
     e.preventDefault();
-    if(items.findIndex((item) => item.id===product.id)<0){
-      const newItem = {...product, productId:product.id, quantity: 1, user:user.id};
+    const newItem = {...product, quantity: 1, user:user.id};
     delete newItem['id'];
     dispatch(addToCartAsync(newItem))
-    }else{
-      console.log('already added');
-    }
-    
   }
 
   useEffect(() => {

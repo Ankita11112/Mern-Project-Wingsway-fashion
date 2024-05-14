@@ -4,37 +4,14 @@ import {deleteItemFromCartAsync, selectItems, updateCartAsync,} from './cartSlic
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Link, Navigate } from 'react-router-dom';
+import { discountedPrice } from '../../app/constants';
 
-// const products = [
-//   {
-//     id: 1,
-//     name: 'Throwback Hip Bag',
-//     href: '#',
-//     color: 'Salmon',
-//     price: '$90.00',
-//     quantity: 1,
-//     imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-//     imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-//   },
-//   {
-//     id: 2,
-//     name: 'Medium Stuff Satchel',
-//     href: '#',
-//     color: 'Blue',
-//     price: '$32.00',
-//     quantity: 1,
-//     imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-//     imageAlt:
-//       'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-//   },
-//   // More products...
-// ]
 
 export default function Cart() {
   const dispatch = useDispatch(); 
   const [open , setOpen] = useState(true);
   const items = useSelector(selectItems);
-  const totalAmount = items.reduce((amount, item) => item.price * item.quantity + amount, 0);
+  const totalAmount = items.reduce((amount, item) => discountedPrice(item) * item.quantity + amount, 0);
   const totalItems = items.reduce((total, item)=> item.quantity + total,0);
 
   const handleQuantity = (e, item) => {
@@ -71,11 +48,8 @@ export default function Cart() {
                             <a href={item.href}>{item.name}</a>
                           </h3>
                           <div className=''>
-                            {/* <p className="ml-4 text-sm font-medium text-gray-900"> ${Math.round(item.price * (1 - item.discountPercentage / 100))}</p> */}
-                            <p className="ml-4 text-sm font-medium text-gray-900">${item.price}</p>
-                            {/* <p className="ml-4 text-sm font-medium line-through text-gray-400">${item.price}</p> */}
-                          </div>
-                          
+                            <p className="ml-4">${discountedPrice(item)}</p>
+                          </div> 
                         </div>
                         <p className="mt-1 text-sm text-gray-500">{item.brand}</p>
                       </div>
